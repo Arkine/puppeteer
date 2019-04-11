@@ -1,0 +1,30 @@
+{
+  "name": "testeer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arkine/puppeteer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Arkine/puppeteer/issues"
+  },
+  "homepage": "https://github.com/Arkine/puppeteer#readme",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.2",
+    "puppeteer": "^1.14.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "nodemon": "^1.18.11"
+  }
+}
