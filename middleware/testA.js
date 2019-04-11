@@ -1,5 +1,8 @@
-module.exports = (ctx, next) => {
-    console.log('testA',{ctx, next});
+const navigateLogin = require('../tests/navigateLogin');
 
-    // Promise.resolve();
+module.exports = async (ctx, next) => {
+    // console.log('testA',{ctx, next});
+    await navigateLogin(ctx);
+
+    next();
 }
