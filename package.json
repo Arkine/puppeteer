@@ -24,6 +24,7 @@
     "puppeteer": "^1.14.0"
   },
   "devDependencies": {
+    "bluebird": "^3.5.4",
     "eslint": "^5.16.0",
     "nodemon": "^1.18.11"
   }
