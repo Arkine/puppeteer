@@ -3,6 +3,8 @@ const puppeteer = require('puppeteer');
 const dotenv = require('dotenv');
 dotenv.config({path: '../.env'});
 
+const path = require('path');
+
 const navigateLogin = require('../tests/navigateLogin');
 const getGoogleTitle = require('../tests/getGoogle');
 
@@ -33,14 +35,16 @@ describe('American Express', () => {
 
 		pipeline.setContext({
 			baseUrl: 'https://www.americanexpress.com',
+			imageOutputDir: path.join(__dirname, '../tests/screenshots/ae')
 		});
 
 		pipeline.addTests([
 			{
-				name: '/ GET',
+				name: 'Should navigate to the login page on login bttn click',
 				before: getFoundation,
 				test: navigateLogin,
-				after: closeBrowser
+				after: closeBrowser,
+				timeout: 5
 			},
 			{
 				name: 'Should get google title',

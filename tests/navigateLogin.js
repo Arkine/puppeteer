@@ -1,33 +1,24 @@
-const puppeteer = require('puppeteer');
 const assert = require('assert');
 
+/**
+ * Check if the login button redirects to the login page
+ * @param {Object} ctx 
+ */
 module.exports = async (ctx) => {
-    // console.log('NAV LOGIN TEST', ctx);
-	// console.log('nav login', ctx);
-    // const browser = await puppeteer.launch({ headless: true });
-    // const page = await browser.newPage();
+    // Goto the AE homepage
+    await ctx.page.goto(`${ctx.baseUrl}/us/credit-cards/business`, {waitUntil: 'domcontentloaded'});
 
-    // // Goto the AE homepage
-    // await ctx.page.goto(`${ctx.baseUrl}/us/credit-cards/business`);
+    // Wait for the login bttn to appear
+    await ctx.page.waitForSelector('#gnav_login', { visible: true });
+    
+    // Click the login bttn
+    await ctx.page.click('#gnav_login');
 
-    // await ctx.page.waitForSelector('#gnav_login', { visible: true });
-    // // const loginBtn = page.$('#gnav_login');
-
-    // await ctx.page.click('#gnav_login');
-
+    // Causes timeout. maybe because it's react?
     // await ctx.page.waitForNavigation();
 
-    // // await page.click()
-
-	// await ctx.browser.close();
-
-	// ctx.cat = 'meow';
-
-	await ctx.page.goto('https://github.com/', { waitUntil: 'domcontentloaded' });
-	const title = await ctx.page.title();
-	// assert.equal(title, 'The world’s leading software development platform · GitHub');
-
-	// await ctx.browser.close();
+    const title = await ctx.page.title();
+	assert.equal(title, 'American Express - Login');
 
 	return ctx;
 }
