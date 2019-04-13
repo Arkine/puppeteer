@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer');
 const assert = require('assert');
 
 module.exports = async (ctx) => {
+    // console.log('NAV LOGIN TEST', ctx);
 	// console.log('nav login', ctx);
     // const browser = await puppeteer.launch({ headless: true });
     // const page = await browser.newPage();
@@ -22,9 +23,9 @@ module.exports = async (ctx) => {
 
 	// ctx.cat = 'meow';
 
-	await ctx.page.goto(ctx.baseUrl, { waitUntil: 'networkidle0' });
+	await ctx.page.goto('https://github.com/', { waitUntil: 'domcontentloaded' });
 	const title = await ctx.page.title();
-	assert.equal(title, 'Business Solutions from American express');
+	// assert.equal(title, 'The world’s leading software development platform · GitHub');
 
 	// await ctx.browser.close();
 

@@ -1,36 +1,54 @@
-const navigateLogin = require('../tests/navigateLogin');
-const getGoogleTitle = require('../tests/getGoogle');
 const Piper = require('../lib/application');
 const puppeteer = require('puppeteer');
+const dotenv = require('dotenv');
+dotenv.config({path: '../.env'});
 
-describe('It should navigate to login', () => {
-	it('Should do a couple of things', async () => {
-		const pipeline = new Piper();
+const navigateLogin = require('../tests/navigateLogin');
+const getGoogleTitle = require('../tests/getGoogle');
 
-		let browser = await puppeteer.launch({headless: true});
-		let page = await browser.newPage();
 
-		// pipeline.set('beforeAll', async () => {
-		// 	console.log('before')
-		// });
+// let browser;
+// let page; 
 
-		pipeline.setContext({
-			browser,
-			page,
-			name: 'Test Me',
-			baseUrl: 'https://www.americanexpress.com'
+const getFoundation = async (ctx) => {
+	ctx.browser = await puppeteer.launch({
+		headless: true
+	});
+	ctx.page = await ctx.browser.newPage();
+
+	return ctx;
+}
+
+const closeBrowser = async (ctx) => {
+	await ctx.browser.close();
+
+	return ctx;
+}
+
+describe('American Express', () => {
+	it('Should navigate to login', async () => {
+		const pipeline = new Piper({
+			name: 'AE tests'
 		});
 
-		pipeline.all([
+		pipeline.setContext({
+			baseUrl: 'https://www.americanexpress.com',
+		});
+
+		pipeline.addTests([
 			{
 				name: '/ GET',
+				before: getFoundation,
 				test: navigateLogin,
+				after: closeBrowser
 			},
 			{
 				name: 'Should get google title',
-				test: getGoogleTitle
+				before: getFoundation,
+				test: getGoogleTitle,
+				after: closeBrowser
 			}
-		])
+		]);
 
 		pipeline.start();
 	})
