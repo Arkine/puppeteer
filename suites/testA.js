@@ -5,20 +5,21 @@ dotenv.config({path: '../.env'});
 
 const path = require('path');
 
-const navigateLogin = require('../tests/navigateLogin');
-const getGoogleTitle = require('../tests/getGoogle');
+const navigateLogin = require('../tests/american-express/navigateLogin');
+const hasCorrectTitle = require('../tests/american-express/hasCorrectTitle');
+const rejectsIncorrectLogin = require('../tests/american-express/rejectsIncorrectLogin');
 
 
 // let browser;
 // let page; 
 
-const getFoundation = async (ctx) => {
+const getFoundation = async (ctx, rest) => {
 	ctx.browser = await puppeteer.launch({
 		headless: true
 	});
 	ctx.page = await ctx.browser.newPage();
 
-	return ctx;
+	return {...ctx, ...rest};
 }
 
 const closeBrowser = async (ctx) => {
@@ -35,7 +36,7 @@ describe('American Express', () => {
 
 		pipeline.setContext({
 			baseUrl: 'https://www.americanexpress.com',
-			imageOutputDir: path.join(__dirname, '../tests/screenshots/ae')
+			imageOutputDir: path.join(__dirname, '../tests/american-express/screenshots')
 		});
 
 		pipeline.addTests([
@@ -44,12 +45,26 @@ describe('American Express', () => {
 				before: getFoundation,
 				test: navigateLogin,
 				after: closeBrowser,
-				timeout: 5
 			},
 			{
-				name: 'Should get google title',
+				name: 'Should have the correct title',
 				before: getFoundation,
-				test: getGoogleTitle,
+				test: hasCorrectTitle,
+				after: closeBrowser
+			},
+			{
+				name: 'Should reject invalidLogin',
+				before: (ctx) => {
+					ctx = getFoundation(ctx, {
+						user: {
+							username: 'dog',
+							password: 'woof'
+						}
+					});
+
+					return ctx;
+				},
+				test: rejectsIncorrectLogin,
 				after: closeBrowser
 			}
 		]);
