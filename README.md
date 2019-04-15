@@ -8,7 +8,7 @@ Testing some concepts on how I can make scalable and easy to use testing framewo
 
 ## Getting started
 Create a test suite
-```
+```javascript
 describe('example.com test', () => {
     it('Login form', () => {
         // Initiate the test object
