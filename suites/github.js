@@ -5,6 +5,9 @@ const dotenv = require('dotenv');
 dotenv.config({path: path.join(__dirname, '../.env')});
 
 const loginUser = require('../tests/github/loginUser');
+const mobileLayout = require('../tests/github/mobileLayoutTest');
+
+const devices = require('puppeteer/DeviceDescriptors');
 
 const setContext = async (ctx, rest) => {
 	ctx.browser = await puppeteer.launch({
@@ -41,14 +44,12 @@ describe('Github', () => {
 			{
 				name: 'Logs in with correct credentials',
 				before: (ctx) => {
-                    ctx = setContext(ctx, {
+                    return setContext(ctx, {
                         user: {
                             username: process.env.GITHUB_USERNAME,
                             password: process.env.GITHUB_PASSWORD,
                         }
                     });
-
-                    return ctx;
                 } ,
 				test: loginUser,
 				after: closeBrowser,
@@ -56,5 +57,41 @@ describe('Github', () => {
 		]);
 
 		pipeline.start();
-	})
+	});
+	
+	it('Mobile Tests', async () => {
+		const pipeline = new Piper({
+			name: 'Mobile Layout'
+		});
+
+		pipeline.setContext({
+			baseUrl: 'https://www.github.com',
+			imageOutputDir: path.join(__dirname, '../tests/github/screenshots')
+		});
+
+		pipeline.addTests([
+			{
+				name: 'iPhone X Login',
+				before: (ctx) => {
+					return setContext(ctx, {
+						device: devices['iPhone X'],
+					});
+				},
+				test: mobileLayout,
+				after: closeBrowser
+			},
+			{
+				name: 'Galaxy S5 Login',
+				before: (ctx) => {
+					return setContext(ctx, {
+						device: devices['Galaxy S5'],
+					});
+				},
+				test: mobileLayout,
+				after: closeBrowser
+			}
+		]);
+
+		pipeline.start();
+	});
 });
