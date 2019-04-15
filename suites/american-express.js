@@ -9,10 +9,6 @@ const navigateLogin = require('../tests/american-express/navigateLogin');
 const hasCorrectTitle = require('../tests/american-express/hasCorrectTitle');
 const rejectsIncorrectLogin = require('../tests/american-express/rejectsIncorrectLogin');
 
-
-// let browser;
-// let page; 
-
 const setContext = async (ctx, rest) => {
 	ctx.browser = await puppeteer.launch({
 		headless: true
