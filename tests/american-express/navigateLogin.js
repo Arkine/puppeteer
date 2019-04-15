@@ -5,6 +5,7 @@ const assert = require('assert');
  * @param {Object} ctx 
  */
 module.exports = async (ctx) => {
+
     // Goto the AE homepage
     await ctx.page.goto(`${ctx.baseUrl}/us/credit-cards/business`);
 

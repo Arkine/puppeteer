@@ -13,11 +13,16 @@ const rejectsIncorrectLogin = require('../tests/american-express/rejectsIncorrec
 // let browser;
 // let page; 
 
-const getFoundation = async (ctx, rest) => {
+const setContext = async (ctx, rest) => {
 	ctx.browser = await puppeteer.launch({
 		headless: true
 	});
 	ctx.page = await ctx.browser.newPage();
+	
+	// Set the page to be english. Showing in German for some reason
+	await ctx.page.setExtraHTTPHeaders({
+        'Accept-Language': 'en'
+    });
 
 	return {...ctx, ...rest};
 }
@@ -42,20 +47,20 @@ describe('American Express', () => {
 		pipeline.addTests([
 			{
 				name: 'Should navigate to the login page on login bttn click',
-				before: getFoundation,
+				before: setContext,
 				test: navigateLogin,
 				after: closeBrowser,
 			},
 			{
 				name: 'Should have the correct title',
-				before: getFoundation,
+				before: setContext,
 				test: hasCorrectTitle,
 				after: closeBrowser
 			},
 			{
 				name: 'Should reject invalidLogin',
 				before: (ctx) => {
-					ctx = getFoundation(ctx, {
+					ctx = setContext(ctx, {
 						user: {
 							username: 'dog',
 							password: 'woof'

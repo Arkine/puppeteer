@@ -4,7 +4,7 @@ const assert = require('assert');
  * @param {Objext} ctx 
  */
 module.exports = async (ctx) => {
-	await ctx.page.goto(ctx.baseUrl, { waitUntil: 'domcontentloaded' });
+	await ctx.page.goto(ctx.baseUrl, { waitUntil: 'networkidle0' });
 	
 	const title = await ctx.page.title();
 	assert.equal(title, 'American Express Credit Cards, Rewards, Travel and Business Services');
