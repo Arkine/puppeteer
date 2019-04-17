@@ -6,7 +6,7 @@ dotenv.config({path: '../.env'});
 const path = require('path');
 
 const checkDetails = require('../tests/american-express/checkDetails');
-const loginFailsWithError = require('../tests/american-express/loginFailsWithError');
+const formFailsWithError = require('../tests/american-express/formFailsWithError');
 
 /**
  * Set the testing context
@@ -18,7 +18,7 @@ const setContext = async (ctx, rest) => {
 		headless: true
 	});
 	ctx.page = await ctx.browser.newPage();
-	
+
 	// Set the page to be english. Showing in German for some reason
 	await ctx.page.setExtraHTTPHeaders({
         'Accept-Language': 'en'
@@ -38,29 +38,57 @@ const closeBrowser = async (ctx) => {
 }
 
 describe('American Express', () => {
-	
-	// Create the new testing pipeline
-	const pipeline = new Piper({
-		name: 'Ensure Card Information in All Cards View is Present on the Card Detail View'
-	});
 
-	// Set the context
-	pipeline.setContext({
-		// The url to test
-		baseUrl: 'http://www.open.com',
-		// The output directory for the screenshots
-		imageOutputDir: path.join(__dirname, '../tests/american-express/screenshots')
-	});
+	{
+		// Create the new testing pipeline
+		const pipeline = new Piper({
+			name: 'Ensure Card Information in All Cards View is Present on the Card Detail View'
+		});
 
-	// Add our test pipeline
-	pipeline.addTests([
-		{
-			name: 'Details are present',
-			before: setContext,
-			test: checkDetails,
-			after: closeBrowser 
-		}
-	]);
+		// Set the context
+		pipeline.setContext({
+			// The url to test
+			baseUrl: 'http://www.open.com',
+			// The output directory for the screenshots
+			imageOutputDir: path.join(__dirname, '../tests/american-express/screenshots')
+		});
 
-	pipeline.start();
+		// Add our test pipeline
+		pipeline.addTests([
+			{
+				name: 'Details are present',
+				before: setContext,
+				test: checkDetails,
+				after: closeBrowser
+			}
+		]);
+
+		pipeline.start();
+	}
+
+	{
+		const pipeline = new Piper({
+			name: 'Ensure Invalid Email Address on Card Application Fails with Correct Error Messages'
+		});
+
+		pipeline.setContext({
+			baseUrl: 'http://www.open.com',
+			imageOutputDir: path.join(__dirname, '../tests/american-express/screenshots')
+		});
+
+		pipeline.addTests([
+			{
+				name: 'Displays the correct error message for invalid email',
+				before: (ctx) => setContext(ctx, {
+					testUser: {
+						email: 'dog'
+					}
+				}),
+				test: formFailsWithError,
+				after: closeBrowser
+			}
+		]);
+
+		pipeline.start();
+	}
 });

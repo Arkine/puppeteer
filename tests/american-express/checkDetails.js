@@ -1,13 +1,13 @@
 /**
  * Ensure Card Information in All Cards View is Present on the Card Detail View
- * @param {Object} ctx 
+ * @param {Object} ctx
  */
 
 module.exports = async (ctx) => {
     const viewAllCardsBttn = '#content > page-app-container > on-scroll-container > section > main-container > div.aexp-product-filter > div.aexp-product-catagories-and-tiles > div.aexp-product-tiles > div.aexp-product-tiles__item.dls-icon-cashback.active > div.aexp-product-tiles__item-tiles > div:nth-child(3) > div.contentContainer.purify_newBusinessHomeProductTiles__contentContainer--3EQes > div > a';
     // The card categories buttons
     const cardCategories = '#business-credit-cards-v3 > div.sections-container.vac-page-v2.has-filter-title > div.aexp-card-filter.item-count-8.vac-card-filter.has-title > ul > li.item-unit > h2';
-    
+
     // The rows containg the elements
     const rows = '#business-credit-cards-v3 .aexp-grid-section:nth-of-type(1) > .rows-wrap > .row';
 
@@ -20,7 +20,7 @@ module.exports = async (ctx) => {
     // Have to wait for at least a second because waitForNavigation won't resolve
     // await page.waitForNavigation({ waitUntil: 'networkidle0' })
     await ctx.page.waitFor(1000);
-    
+
     // Wait for the menu to load
     await ctx.page.waitForSelector(cardCategories);
 
