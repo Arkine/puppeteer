@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const path = require('path');
+const assert = require('assert');
 
 const baseUrl = 'http://open.com';
 
@@ -70,10 +71,12 @@ describe("American Express Cards", () => {
 
             // Find which card has no fee and store the index
             if (feeEls.length) {
-                for (let i = 0; i < feeEls.length; i++) {``
-                    if (/\$[1-9]{1,}/g.test(feeEls[i].innerText)) {
+                for (let i = 0; i < feeEls.length; i++) {
+					const re = /(\$[1-9]{1,} Annual Fee)/g;
+
+                    if (re.test(feeEls[i].innerHTML)) {
 						colIndex = i;
-						fee = feeEls[i].innerText
+						fee = feeEls[i].innerHTML.match(re)[0];
                         break;
                     }
                 }
@@ -85,9 +88,28 @@ describe("American Express Cards", () => {
 			return fee;
 		});
 
-        // Wait for page to respond
+		// Wait for the page to navigate
 		await navPromise;
-		await page.waitFor(1000);
+
+		// Wait for the fees title
+		await page.waitForSelector('.credit-card-detail h2.aexp-feature-title');
+
+		const detailsFee = await page.$$eval('.credit-card-detail aexp-feature', features => {
+			let index;
+			for (let i = 0; i < features.length; i++) {
+				const header = features[i].querySelector('h2.aexp-feature-title');
+				if (header.innerText === 'Fees') {
+					index = i;
+					break;
+				}
+			}
+
+			const header = features[index].querySelector('aexp-feature-header');
+			return header.innerText;
+		});
+
+		// I wasn't sure whether the assertion should match with casing as well as verbiage so I went for verbiage
+		assert.equal(fee.toLowerCase(), detailsFee.toLowerCase());
 
         await page.screenshot({path: `${path.join(__dirname, '../../tests/american-express/screenshots/')}/details2.png`, fullPage: true});
 
