@@ -26,14 +26,17 @@ let page;
 
 describe('Apply for credit card form', () => {
 
+	// View all cards button on the homepage
+	const viewAllCardsSelector = '#content > page-app-container > on-scroll-container > section > main-container > div.aexp-product-filter > div.aexp-product-catagories-and-tiles > div.aexp-product-tiles > div.aexp-product-tiles__item.dls-icon-cashback.active > div.aexp-product-tiles__item-tiles > div:nth-child(3) > div.contentContainer.purify_newBusinessHomeProductTiles__contentContainer--3EQes > div > a';
+	const submitButton = '.application-main #submit';
+	const warningMessage = '.warning-message';
+
 	before(async () => {
 		browser = await puppeteer.launch({ headless: true });
 		page = await browser.newPage();
 	});
-	// View all cards button on the homepage
-	const viewAllCardsSelector = '#content > page-app-container > on-scroll-container > section > main-container > div.aexp-product-filter > div.aexp-product-catagories-and-tiles > div.aexp-product-tiles > div.aexp-product-tiles__item.dls-icon-cashback.active > div.aexp-product-tiles__item-tiles > div:nth-child(3) > div.contentContainer.purify_newBusinessHomeProductTiles__contentContainer--3EQes > div > a';
 
-	it('Invalid Email Address on Card Application Fails with Correct Error Messages', async () => {
+	it('Invalid email address fails with correct error message', async () => {
 		const navPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded' });
 
 		// Wait for navigation to the home page
@@ -68,7 +71,7 @@ describe('Apply for credit card form', () => {
 		await page.type('.application-form-wrapper .email input[type="email"]', testUser.email);
 
 		// Click the submit bttn;
-		await page.click('.application-main #submit');
+		await page.click(submitButton);
 
 		// Wait for the page to respond
 		// await page.waitFor(1000);
@@ -90,13 +93,26 @@ describe('Apply for credit card form', () => {
 
 		// Assert that this is the value we are expecting
 		assert.equal(error, 'Your Email Address is missing the @ symbol');
+	}).timeout(0);
 
-		await page.screenshot({ path: `${path.join(__dirname, '../../tests/american-express/screenshots')}/formfail.png`, fullPage: true });
+	it('Shows the correct error message for invalid form data', async () => {
+		// Submit the form again
+		await page.click(submitButton);
 
+		await page.waitFor(1000);
 
+		// Check the message
+		// 'Please make sure that all required fields are complete and valid'
+		await page.waitForSelector(warningMessage);
+
+		const warningText = await page.$eval(warningMessage, message => message.innerText);
+
+		assert.equal(warningText, 'Please make sure that all required fields are complete and valid');
 	}).timeout(0);
 
 	after(async () => {
+		await page.screenshot({ path: `${path.join(__dirname, '../../tests/american-express/screenshots')}/formfail-standard.png`, fullPage: true });
+
 		await browser.close();
 	});
 })

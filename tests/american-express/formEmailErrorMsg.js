@@ -16,6 +16,8 @@ const assert = require('assert');
 
 module.exports = async (ctx) => {
 	const viewAllCardsSelector = '#content > page-app-container > on-scroll-container > section > main-container > div.aexp-product-filter > div.aexp-product-catagories-and-tiles > div.aexp-product-tiles > div.aexp-product-tiles__item.dls-icon-cashback.active > div.aexp-product-tiles__item-tiles > div:nth-child(3) > div.contentContainer.purify_newBusinessHomeProductTiles__contentContainer--3EQes > div > a';
+	const submitButton = '.application-main #submit';
+	const warningMessage = '.warning-message';
 
 	const navPromise = ctx.page.waitForNavigation({ waitUntil: 'domcontentloaded' });
 
@@ -51,7 +53,7 @@ module.exports = async (ctx) => {
 	await ctx.page.type('.application-form-wrapper .email input[type="email"]', ctx.testUser.email);
 
 	// Click the submit bttn;
-	await ctx.page.click('.application-main #submit');
+	await ctx.page.click(submitButton);
 
 	// Wait for the page to respond
 	// await page.waitFor(1000);
@@ -74,7 +76,17 @@ module.exports = async (ctx) => {
 	// Assert that this is the value we are expecting
 	assert.equal(error, 'Your Email Address is missing the @ symbol');
 
-	await ctx.page.screenshot({ path: `${ctx.imageOutputDir}/formfail.png`, fullPage: true });
+	await ctx.page.click(submitButton);
+
+	await ctx.page.waitFor(1000);
+
+	// Check the message
+	// 'Please make sure that all required fields are complete and valid'
+	await ctx.page.waitForSelector(warningMessage);
+
+	const warningText = await ctx.page.$eval(warningMessage, message => message.innerText);
+	
+	assert.equal(warningText, 'Please make sure that all required fields are complete and valid');
 
     return ctx;
 }

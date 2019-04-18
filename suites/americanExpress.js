@@ -6,7 +6,8 @@ dotenv.config({path: '../.env'});
 const path = require('path');
 
 const checkDetails = require('../tests/american-express/checkDetails');
-const formFailsWithError = require('../tests/american-express/formFailsWithError');
+const formEmailErrorMsg = require('../tests/american-express/formEmailErrorMsg');
+const formErrorMsg = require('../tests/american-express/formErrorMsg');
 
 /**
  * Set the testing context
@@ -42,7 +43,7 @@ describe('American Express', () => {
 	{
 		// Create the new testing pipeline
 		const pipeline = new Piper({
-			name: 'Ensure Card Information in All Cards View is Present on the Card Detail View'
+			name: 'Ensure Card annual fees match'
 		});
 
 		// Set the context
@@ -56,7 +57,7 @@ describe('American Express', () => {
 		// Add our test pipeline
 		pipeline.addTests([
 			{
-				name: 'Details are present',
+				name: 'Dollar values match',
 				before: setContext,
 				test: checkDetails,
 				after: closeBrowser
@@ -84,8 +85,15 @@ describe('American Express', () => {
 						email: 'dog'
 					}
 				}),
-				test: formFailsWithError,
-				after: closeBrowser
+				test: formEmailErrorMsg,
+			},
+			{
+				name: 'Form displays corect error message for invalid form data',
+				test: formErrorMsg,
+				after: async (ctx) => {
+					await ctx.page.screenshot({ path: `${ctx.imageOutputDir}/formfail.png`, fullPage: true });
+					closeBrowser(ctx);
+				}
 			}
 		]);
 

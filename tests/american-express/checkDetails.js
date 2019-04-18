@@ -54,7 +54,7 @@ module.exports = async (ctx) => {
 		// Find which card has no fee and store the index
 		if (feeEls.length) {
 			for (let i = 0; i < feeEls.length; i++) {
-				const re = /(\$[1-9]{1,} Annual Fee)/g;
+				const re = /(\$[1-9]{1,})/g;
 
 				if (re.test(feeEls[i].innerHTML)) {
 					colIndex = i;
@@ -73,6 +73,8 @@ module.exports = async (ctx) => {
 	// Wait for the page to navigate
 	await navPromise;
 
+	await ctx.page.waitFor(1000);
+
 	// Wait for the fees title
 	await ctx.page.waitForSelector('.credit-card-detail h2.aexp-feature-title');
 
@@ -87,7 +89,8 @@ module.exports = async (ctx) => {
 		}
 
 		const header = features[index].querySelector('aexp-feature-header');
-		return header.innerText;
+		const re = /(\$[1-9]{1,})/g;
+		return header.innerHTML.match(re)[0];
 	});
 
 	// I wasn't sure whether the assertion should match with casing as well as verbiage so I went for verbiage
@@ -95,7 +98,7 @@ module.exports = async (ctx) => {
 
     await ctx.page.waitFor(1000);
 
-    await ctx.page.screenshot({path: `${ctx.imageOutputDir}/details2.png`, fullPage: true});
+    await ctx.page.screenshot({path: `${ctx.imageOutputDir}/details.png`, fullPage: true});
 
     return ctx;
 }

@@ -23,7 +23,7 @@ describe("American Express Cards", () => {
         page = await browser.newPage();
     });
 
-    it("Should contain proper details", async () => {
+    it("Should contain matching dollar values", async () => {
 		const navPromise = page.waitForNavigation({ waitUntil: 'domcontentloaded' });
 
         // Navigate the the home page
@@ -72,7 +72,7 @@ describe("American Express Cards", () => {
             // Find which card has no fee and store the index
             if (feeEls.length) {
                 for (let i = 0; i < feeEls.length; i++) {
-					const re = /(\$[1-9]{1,} Annual Fee)/g;
+					const re = /(\$[1-9]{1,})/g;
 
                     if (re.test(feeEls[i].innerHTML)) {
 						colIndex = i;
@@ -105,13 +105,15 @@ describe("American Express Cards", () => {
 			}
 
 			const header = features[index].querySelector('aexp-feature-header');
-			return header.innerText;
+			const re = /(\$[1-9]{1,})/g;
+            
+            return header.innerHTML.match(re)[0];
 		});
 
 		// I wasn't sure whether the assertion should match with casing as well as verbiage so I went for verbiage
 		assert.equal(fee.toLowerCase(), detailsFee.toLowerCase());
 
-        await page.screenshot({path: `${path.join(__dirname, '../../tests/american-express/screenshots/')}/details2.png`, fullPage: true});
+        await page.screenshot({path: `${path.join(__dirname, '../../tests/american-express/screenshots/')}/details-standard.png`, fullPage: true});
 
     }).timeout(0);
 
