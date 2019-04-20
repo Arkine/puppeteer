@@ -13,6 +13,7 @@ Choose "Continue" at the end of the form without filling in any other fields
 Expect/Assert the form to fail submission and present the error text at the top of the form which reads "Please make sure that all required fields are complete and valid"
 */
 const assert = require('assert');
+const getBoundingBox = require('../../helpers/getBoundingRect');
 
 module.exports = async (ctx) => {
 	const viewAllCardsSelector = '#content > page-app-container > on-scroll-container > section > main-container > div.aexp-product-filter > div.aexp-product-catagories-and-tiles > div.aexp-product-tiles > div.aexp-product-tiles__item.dls-icon-cashback.active > div.aexp-product-tiles__item-tiles > div:nth-child(3) > div.contentContainer.purify_newBusinessHomeProductTiles__contentContainer--3EQes > div > a';
@@ -85,6 +86,17 @@ module.exports = async (ctx) => {
 	await ctx.page.waitForSelector(warningMessage);
 
 	const warningText = await ctx.page.$eval(warningMessage, message => message.innerText);
+	
+	const rect = await getBoundingBox(warningMessage, ctx.page);
+	await ctx.page.screenshot({ 
+		path: `${ctx.imageOutputDir}/formfail-clipped.png`,
+		clip: {
+			x: rect.left - 16,
+			y: rect.top + 16,
+			width: rect.width + 16 * 2,
+			height: rect.height + 16 * 2,
+		}
+	});
 	
 	assert.equal(warningText, 'Please make sure that all required fields are complete and valid');
 
