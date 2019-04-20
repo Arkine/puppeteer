@@ -92,7 +92,7 @@ module.exports = async (ctx) => {
 		path: `${ctx.imageOutputDir}/formfail-clipped.png`,
 		clip: {
 			x: rect.left - 16,
-			y: rect.top + 16,
+			y: rect.top - 16,
 			width: rect.width + 16 * 2,
 			height: rect.height + 16 * 2,
 		}
