@@ -18,17 +18,10 @@ module.exports = async ctx => {
     // so set a small timeout and catch the "navigation timeout".
     try {
         await ctx.page.goto(`${ctx.baseUrl}#test`, { timeout: 1 });
-    } catch(e) {
-        // no op
-    }
-
-    try {
         await ctx.page.goto(`${ctx.baseUrl}#woof`, { timeout: 1 });
     } catch(e) {
         // no op
     }
-
-    // console.log('url', await ctx.page.getUrl());
     
     return ctx;
 }
