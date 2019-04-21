@@ -25,8 +25,8 @@ module.exports = async (ctx) => {
     await ctx.page.waitFor(1000);
 
     // Wait for the menu to load
-    await ctx.page.waitForSelector(cardCategories);
-	throw new Error('asd');
+	await ctx.page.waitForSelector(cardCategories);
+	
     // Find the Travel Rewards button and click it
     const [travelRewardsBttn] = await ctx.page.$x("//h2[@class='item-label'][contains(text(), 'Travel Rewards')]");
     if (travelRewardsBttn) {
