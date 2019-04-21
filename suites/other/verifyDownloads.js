@@ -17,7 +17,7 @@ const closeBrowser = async (ctx) => {
 
 describe("Verify Download", () => {
     const pipeline = new Piper({
-        name: "Should verify"
+        name: "Should verify file downloaded properly"
     });
 
     pipeline.setContext({
