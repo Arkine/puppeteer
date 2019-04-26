@@ -73,5 +73,5 @@ describe('example.com test', () => {
 4. ```test(ctx: Object):ctx```: The test to be performed. Retuns the ctx to be used in the ```after``` function
 5. ```after(ctx: Object):ctx```: The functions to be run after the test has completed. returns the ctx to the next item in the pipeline.
 6. ```start(): Pipeline```: Begin the tests;
-7. ```set(key: String): String```: Sets the property value on the class
+7. ```set(key: String, value: Any): Object```: Sets the property value on the class
 8. ```use: Function = () => {}```: Insert an individual test
