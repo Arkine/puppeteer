@@ -46,8 +46,12 @@ describe('example.com test', () => {
                 },
                 test: (ctx) => {
                     ...
+
+                    return ctx;
                 },
                 after: (ctx) => {
+                    ...
+                    return ctx;
                 }
             }
         ]);
@@ -57,3 +61,14 @@ describe('example.com test', () => {
     });
 })
 ```
+
+## API
+1. ```new Pipeline(options: Object): Pipeline```: Constructor function that takes in the settings of the pipeline itself
+    - ```name: String = '----'```: The name of the test suite.
+    - ```tests: Array[Object] = []```: The tests to be performed.
+    - ```beforeAll: Function = done => done()```: The function to be ran before all tests.
+    - ```afterAll: Function = done => done()```: Function to be ran after all tests have completed.
+
+2. ```before(ctx: Object):ctx```: The function to be called before the test. Takes in a ctx object and returns that object to be used in the test iteself.
+3. ```test(ctx: Object):ctx```: The test to be performed. Retuns the ctx to be used in the ```after``` function
+4. ```after(ctx: Object):ctx```: The functions to be run after the test has completed. returns the ctx to the next item in the pipeline.
