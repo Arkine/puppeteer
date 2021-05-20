@@ -1,5 +1,7 @@
 # Puppeteer testing
-Testing some concepts on how I can make a scalable and easy to use testing framework with Puppeteer
+Testing some concepts on how I can make a scalable and easy to use testing framework with Puppeteer. 
+
+I built this tool as a way to pipe puppeteer processes through Mocha instead of having to write redundant test files. This way, I am able to provide a context as well as modularize the test files to make them easier to work with. I can also do things like chain simpler puppeteer scripts together such as login and update the context for the next test.
 
 ## Tools
 - Puppeteer
