@@ -20,7 +20,7 @@
   "homepage": "https://github.com/Arkine/puppeteer#readme",
   "dependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.3"
+    "mocha": "^10.2.0"
   },
   "devDependencies": {
     "bluebird": "^3.5.4",
